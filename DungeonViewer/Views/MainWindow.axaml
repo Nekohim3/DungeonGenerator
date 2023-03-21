@@ -1,0 +1,75 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DungeonViewer.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:zoomAndPan="clr-namespace:AFRDL.Utils.ZoomAndPan"
+        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+        x:Class="DungeonViewer.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DungeonViewer">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+	<Grid ColumnDefinitions="*, Auto">
+		<Grid Grid.Column="0">
+			<zoomAndPan:ZoomBorder x:Name="Zap" ZoomSpeed="1.2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Stretch="None" PanButton="Left">
+				<Image Source="{Binding Image}" RenderOptions.BitmapInterpolationMode="Default"/>
+			</zoomAndPan:ZoomBorder>
+		</Grid>
+		<Grid Grid.Column="1">
+			<Grid ColumnDefinitions="Auto, Auto, Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*,Auto" Margin="3">
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Room min width" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding RoomMinWidth}"/>
+				<TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding RoomMinWidth}"/>
+
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="Room min height" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding RoomMinHeight}"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding RoomMinHeight}"/>
+
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Room max width" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="2" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding RoomMaxWidth}"/>
+				<TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding RoomMaxWidth}"/>
+
+				<TextBlock Grid.Row="3" Grid.Column="0" Text="Room max height" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding RoomMaxHeight}"/>
+                <TextBlock Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding RoomMaxHeight}"/>
+
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Room min count" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="4" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding RoomMinCount}"/>
+				<TextBlock Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding RoomMinCount}"/>
+
+				<TextBlock Grid.Row="5" Grid.Column="0" Text="Room max count" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="5" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding RoomMaxCount}"/>
+				<TextBlock Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding RoomMaxCount}"/>
+
+				<TextBlock Grid.Row="6" Grid.Column="0" Text="Min distance" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="6" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MinDistanceBetweenRooms}"/>
+				<TextBlock Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MinDistanceBetweenRooms}"/>
+
+				<TextBlock Grid.Row="7" Grid.Column="0" Text="Max distance" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="7" Grid.Column="1" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MaxDistanceBetweenRooms}"/>
+				<TextBlock Grid.Row="7" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MaxDistanceBetweenRooms}"/>
+
+				<TextBlock Grid.Row="8" Grid.Column="0" Text="Min pass width" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="8" Grid.Column="1" Minimum="1" Maximum="3" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MinPassWidth}"/>
+				<TextBlock Grid.Row="8" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MinPassWidth}"/>
+
+				<TextBlock Grid.Row="9" Grid.Column="0" Text="Max pass width" VerticalAlignment="Center" Margin="5"/>
+				<Slider Grid.Row="9" Grid.Column="1" Minimum="1" Maximum="3" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MaxPassWidth}"/>
+				<TextBlock Grid.Row="9" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MaxPassWidth}"/>
+
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Seed" VerticalAlignment="Center" Margin="5"/>
+				<TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Seed}"/>
+				<Button Grid.Row="10" Grid.Column="2" Width="30" VerticalAlignment="Center" Content="R"/>
+
+
+            </Grid>
+		</Grid>
+
+	</Grid>
+
+</Window>
