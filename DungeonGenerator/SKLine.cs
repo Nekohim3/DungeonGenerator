@@ -99,27 +99,120 @@ public struct SKLineI
     #endregion
 
     #region Funcs
-    
-    public SKPoint Intersect(SKLineI l)
+    public SKPoint Intersect(SKLineI other, float tolerance = 0.00005f)
     {
-        var x1 = Start.X;
-        var y1 = Start.Y;
-        var x2 = End.X;
-        var y2 = End.Y;
+        var l = this;
+        bool IsInsideLine(SKLineI line, SKPoint p, float tol)
+        {
+            float x = p.X, y = p.Y;
 
-        var x3 = l.Start.X;
-        var y3 = l.Start.Y;
-        var x4 = l.End.X;
-        var y4 = l.End.Y;
+            var leftX = line.Start.X;
+            var leftY = line.Start.Y;
 
-        var det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-        if (det == 0)
+            var rightX = line.End.X;
+            var rightY = line.End.Y;
+
+            return ((x.IsGreaterThanOrEqual(leftX, tol) && x.IsLessThanOrEqual(rightX, tol))
+                    || (x.IsGreaterThanOrEqual(rightX, tol) && x.IsLessThanOrEqual(leftX, tol)))
+                   && ((y.IsGreaterThanOrEqual(leftY, tol) && y.IsLessThanOrEqual(rightY, tol))
+                       || (y.IsGreaterThanOrEqual(rightY, tol) && y.IsLessThanOrEqual(leftY, tol)));
+        }
+
+        if (l.Start == other.Start && l.End == other.End)
+            throw new Exception("Both lines are the same.");
+
+        if (l.Start.X.CompareTo(other.Start.X) > 0)
+            (l, other) = (other, l);
+        else if (l.Start.X.CompareTo(other.Start.X) == 0)
+        {
+            if (l.Start.Y.CompareTo(other.Start.Y) > 0)
+                (l, other) = (other, l);
+        }
+
+        float x1 = l.Start.X, y1 = l.Start.Y;
+        float x2 = l.End.X, y2 = l.End.Y;
+        float x3 = other.Start.X, y3 = other.Start.Y;
+        float x4 = other.End.X, y4 = other.End.Y;
+
+        if (x1.IsEqual(x2) && x3.IsEqual(x4) && x1.IsEqual(x3))
+        {
+            var firstIntersection = new SKPoint(x3, y3);
+            if (IsInsideLine(l, firstIntersection, tolerance) &&
+                IsInsideLine(other, firstIntersection, tolerance))
+                return new SKPoint(x3, y3);
+        }
+
+        if (y1.IsEqual(y2) && y3.IsEqual(y4) && y1.IsEqual(y3))
+        {
+            var firstIntersection = new SKPoint(x3, y3);
+            if (IsInsideLine(l, firstIntersection, tolerance) &&
+                IsInsideLine(other, firstIntersection, tolerance))
+                return new SKPoint(x3, y3);
+        }
+
+        if (x1.IsEqual(x2) && x3.IsEqual(x4))
             return default;
 
-        var x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / det;
-        var y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / det;
-        return new SKPoint(x, y);
+        if (y1.IsEqual(y2) && y3.IsEqual(y4))
+            return default;
+
+        float x, y;
+        if (x1.IsEqual(x2))
+        {
+            var m2 = (y4 - y3) / (x4 - x3);
+            var c2 = -m2 * x3 + y3;
+            x = x1;
+            y = c2 + m2 * x1;
+        }
+        else if (x3.IsEqual(x4))
+        {
+            var m1 = (y2 - y1) / (x2 - x1);
+            var c1 = -m1 * x1 + y1;
+            x = x3;
+            y = c1 + m1 * x3;
+        }
+        else
+        {
+            var m1 = (y2 - y1) / (x2 - x1);
+            var c1 = -m1 * x1 + y1;
+            var m2 = (y4 - y3) / (x4 - x3);
+            var c2 = -m2 * x3 + y3;
+            x = (c1 - c2) / (m2 - m1);
+            y = c2 + m2 * x;
+
+            if (!((-m1 * x + y).IsEqual(c1)
+                  && (-m2 * x + y).IsEqual(c2)))
+                return default;
+        }
+
+        var result = new SKPoint(x, y);
+
+        if (IsInsideLine(l, result, tolerance) &&
+            IsInsideLine(other, result, tolerance))
+            return result;
+
+        return default;
     }
+    //public SKPoint Intersect(SKLineI l)
+    //{
+    //    var x1 = Start.X;
+    //    var y1 = Start.Y;
+    //    var x2 = End.X;
+    //    var y2 = End.Y;
+
+    //    var x3 = l.Start.X;
+    //    var y3 = l.Start.Y;
+    //    var x4 = l.End.X;
+    //    var y4 = l.End.Y;
+
+    //    var det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    //    if (det == 0)
+    //        return default;
+
+    //    var x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / det;
+    //    var y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / det;
+    //    return new SKPoint(x, y);
+    //}
 
     #endregion
 }

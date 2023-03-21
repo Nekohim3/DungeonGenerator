@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Reactive;
 using Avalonia.Media.Imaging;
 using DungeonGenerator;
 using DungeonViewer.Utils;
@@ -149,12 +150,23 @@ namespace DungeonViewer.ViewModels
             set => this.RaiseAndSetIfChanged(ref _image, value);
         }
 
-        private byte[,] _mapArray;
-        public byte[,] MapArray
+        private byte[,]? _mapArray;
+        public byte[,]? MapArray
         {
             get => _mapArray;
             set => this.RaiseAndSetIfChanged(ref _mapArray, value);
         }
+
+        private bool _fixSeed;
+        public bool FixSeed
+        {
+            get => _fixSeed;
+            set => this.RaiseAndSetIfChanged(ref _fixSeed, value);
+        }
+
+        public ReactiveCommand<Unit, Unit> GenerateCmd { get; }
+
+
 
         private Map _map;
 
@@ -163,34 +175,57 @@ namespace DungeonViewer.ViewModels
         public MainWindowViewModel()
         {
             _roomMinWidth            = 10;
-            _roomMaxWidth            = 10;
-            _roomMinHeight           = 30;
+            _roomMinHeight           = 10;
+            _roomMaxWidth            = 30;
             _roomMaxHeight           = 30;
             _roomMinCount            = 5;
             _roomMaxCount            = 10;
-            _minDistanceBetweenRooms = 0;
+            _minDistanceBetweenRooms = 15;
             _maxDistanceBetweenRooms = 30;
             _minPassWidth            = 1;
             _maxPassWidth            = 3;
-            _seed                    = 0;
-            _map                     = new Map(_roomMinWidth, _roomMaxWidth, _roomMinHeight, _roomMaxHeight, _roomMinCount, _roomMaxCount, _minDistanceBetweenRooms, _maxDistanceBetweenRooms, _minPassWidth, _maxPassWidth);
-            ColorDict                = new Dictionary<int, SKColor> {{0, SKColors.Black}, {1, SKColors.White}};
+            _seed                    = 1;
+            FixSeed                  = true;
+            GenerateCmd              = ReactiveCommand.Create(OnGenerate);
+            _map                     = new Map(_roomMinWidth, _roomMinHeight, _roomMaxWidth, _roomMaxHeight, _roomMinCount, _roomMaxCount, _minDistanceBetweenRooms, _maxDistanceBetweenRooms, _minPassWidth, _maxPassWidth);
+            ColorDict                = new Dictionary<int, SKColor> { { 0, new SKColor(0x22, 0x22, 0x22) }, { 1, new SKColor(0x77, 0x77, 0x77) } };
+            GenerateMap();
+        }
+
+        private void OnGenerate()
+        {
             GenerateMap();
         }
 
         public void GenerateMap()
         {
-            MapArray = _map.GenerateMap(_seed);
-            var sbmp = new Sbmp(MapArray.GetLength(0), MapArray.GetLength(1));
-            for (var i = 0; i < MapArray.GetLength(0); i++)
+            if (!FixSeed)
             {
-                for (var j = 0; j < MapArray.GetLength(1); j++)
-                {
-                    sbmp.DrawPixel(new SKPointI(i, j), ColorDict[MapArray[i, j]]);
-                }
+                _seed = new Random().Next(int.MinValue, int.MaxValue);
+                this.RaisePropertyChanged(nameof(Seed));
             }
 
-            Image = sbmp.GetBitmap;
+            MapArray = _map.GenerateMap(_seed);
+            if (MapArray == null)
+            {
+                var sbmp = new Sbmp(10, 10);
+                sbmp.Fill(SKColors.Red);
+                Image = sbmp.GetBitmap;
+            }
+            else
+            {
+                var sbmp = new Sbmp(MapArray.GetLength(0), MapArray.GetLength(1));
+                for (var i = 0; i < MapArray.GetLength(0); i++)
+                {
+                    for (var j = 0; j < MapArray.GetLength(1); j++)
+                    {
+                        sbmp.DrawPixel(new SKPointI(i, j), ColorDict[MapArray[i, j]]);
+                    }
+                }
+
+                Image = sbmp.GetBitmap;
+                sbmp.Save("F:\\test.png");
+            }
         }
     }
 }
