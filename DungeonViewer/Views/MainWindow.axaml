@@ -55,11 +55,11 @@
 								<TextBlock Grid.Row="7" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MaxDistanceBetweenRooms}"/>
 
 								<TextBlock Grid.Row="8" Grid.Column="0" Text="Min pass width" VerticalAlignment="Center" Margin="5"/>
-								<Slider Grid.Row="8" Grid.Column="1" Minimum="1" Maximum="3" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MinPassWidth}"/>
+								<Slider Grid.Row="8" Grid.Column="1" Minimum="1" Maximum="30" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MinPassWidth}"/>
 								<TextBlock Grid.Row="8" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MinPassWidth}"/>
 
 								<TextBlock Grid.Row="9" Grid.Column="0" Text="Max pass width" VerticalAlignment="Center" Margin="5"/>
-								<Slider Grid.Row="9" Grid.Column="1" Minimum="1" Maximum="3" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MaxPassWidth}"/>
+								<Slider Grid.Row="9" Grid.Column="1" Minimum="1" Maximum="30" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MaxPassWidth}"/>
 								<TextBlock Grid.Row="9" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MaxPassWidth}"/>
 
 								<TextBlock Grid.Row="10" Grid.Column="0" Text="Seed" VerticalAlignment="Center" Margin="5"/>

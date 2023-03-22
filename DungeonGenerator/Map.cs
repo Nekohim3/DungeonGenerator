@@ -58,6 +58,9 @@ namespace DungeonGenerator
             if (GenerateRooms())
             {
                 GeneratePasses();
+                NormalizeMap();
+                SetPassesWidth();
+                NormalizeMap();
                 GenerateMapArray();
                 return _mapArray;
             }
@@ -171,14 +174,14 @@ namespace DungeonGenerator
                         var passX = GetRand(Math.Max(x.Rect.Left, c.Rect.Left) + 1, Math.Min(x.Rect.Right, c.Rect.Right) - 1);
                         _passes.Add(x.Rect.Bottom < c.Rect.Top
                                        ? new Pass(x, c, new SKRectI(passX, x.Rect.Bottom, passX, c.Rect.Top - 1))
-                                       : new Pass(x, c, new SKRectI(passX, x.Rect.Top                       - 1, passX, c.Rect.Bottom)));
+                                       : new Pass(x, c, new SKRectI(passX, x.Rect.Top - 1, passX, c.Rect.Bottom)));
                     }
                     else if (c.Rect.Bottom > x.Rect.Top + 2 && c.Rect.Top < x.Rect.Bottom - 2) // straight pass horizontal
                     {
                         var passY = GetRand(Math.Max(x.Rect.Top, c.Rect.Top) + 1, Math.Min(x.Rect.Bottom, c.Rect.Bottom) - 1);
                         _passes.Add(x.Rect.Right < c.Rect.Left
                                        ? new Pass(x, c, new SKRectI(x.Rect.Right, passY, c.Rect.Left - 1, passY))
-                                       : new Pass(x, c, new SKRectI(x.Rect.Left                      - 1, passY, c.Rect.Right, passY)));
+                                       : new Pass(x, c, new SKRectI(x.Rect.Left - 1, passY, c.Rect.Right, passY)));
                     }
                     else
                     {
@@ -205,6 +208,33 @@ namespace DungeonGenerator
                 }
             }
 
+            
+        }
+
+        private void NormalizeMap()
+        {
+            foreach (var x in _rooms)
+                x.Rect = x.Rect.Standardized;
+            var area = GetArea();
+            foreach (var x in _passes)
+            {
+                for (var i = 0; i < x.LineList.Count; i++)
+                {
+                    x.LineList[i] = x.LineList[i].Standardized;
+                    if (x.LineList[i].Left < 0)
+                        x.LineList[i] = x.LineList[i] with { Left = 0 };
+                    if (x.LineList[i].Top < 0)
+                        x.LineList[i] = x.LineList[i] with { Top = 0 };
+                    if (x.LineList[i].Right > area.Right)
+                        x.LineList[i] = x.LineList[i] with { Right = area.Right };
+                    if (x.LineList[i].Bottom > area.Bottom)
+                        x.LineList[i] = x.LineList[i] with {Bottom = area.Bottom};
+                }
+            }
+        }
+
+        private void SetPassesWidth()
+        {
             foreach (var x in _passes)
             {
                 var pw = GetRand(MinPassWidth, MaxPassWidth) - 1;
@@ -224,15 +254,39 @@ namespace DungeonGenerator
                         case 3:
                             if (x.LineList[0].Left == x.LineList[0].Right)
                             {
-                                x.LineList[0] = x.LineList[0] with { Left = x.LineList[0].Left - pw / 2 - (x.LineList[0].Left > x.LineList[2].Left ? pw % 2 : 0), Right = x.LineList[0].Right   + pw / 2 + (x.LineList[0].Right < x.LineList[2].Right ? pw % 2 : 0) };
-                                x.LineList[1] = x.LineList[1] with { Top = x.LineList[1].Top   - pw / 2 - (!side ? pw                                   % 2 : 0), Bottom = x.LineList[1].Bottom + pw / 2 + (side ? pw                                      % 2 : 0) };
-                                x.LineList[2] = x.LineList[2] with { Left = x.LineList[2].Left - pw / 2 - (x.LineList[0].Left < x.LineList[2].Left ? pw % 2 : 0), Right = x.LineList[2].Right   + pw / 2 + (x.LineList[0].Right > x.LineList[2].Right ? pw % 2 : 0) };
+                                x.LineList[0] = x.LineList[0] with
+                                {
+                                    Left = x.LineList[0].Left - pw / 2 - (x.LineList[0].Left > x.LineList[2].Left ? pw % 2 : 0),
+                                    Right = x.LineList[0].Right + pw / 2 + (x.LineList[0].Right < x.LineList[2].Right ? pw % 2 : 0),
+                                    Top = x.LineList[0].Top - (x.LineList[0].Top > x.LineList[2].Top ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Bottom = x.LineList[0].Bottom + (x.LineList[0].Top < x.LineList[2].Top ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
+                                x.LineList[1] = x.LineList[1] with { Top = x.LineList[1].Top - pw / 2 - (!side ? pw % 2 : 0), Bottom = x.LineList[1].Bottom + pw / 2 + (side ? pw % 2 : 0) };
+                                x.LineList[2] = x.LineList[2] with
+                                {
+                                    Left = x.LineList[2].Left - pw / 2 - (x.LineList[0].Left < x.LineList[2].Left ? pw % 2 : 0),
+                                    Right = x.LineList[2].Right + pw / 2 + (x.LineList[0].Right > x.LineList[2].Right ? pw % 2 : 0),
+                                    Top = x.LineList[2].Top - (x.LineList[0].Top < x.LineList[2].Top ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Bottom = x.LineList[2].Bottom + (x.LineList[0].Top > x.LineList[2].Top ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
                             }
                             else
                             {
-                                x.LineList[0] = x.LineList[0] with { Top = x.LineList[0].Top   - pw / 2 - (x.LineList[0].Top > x.LineList[2].Top ? pw % 2 : 0), Bottom = x.LineList[0].Bottom + pw / 2 + (x.LineList[0].Bottom < x.LineList[2].Bottom ? pw % 2 : 0) };
-                                x.LineList[1] = x.LineList[1] with { Left = x.LineList[1].Left - pw / 2 - (!side ? pw                                 % 2 : 0), Right = x.LineList[1].Right   + pw / 2 + (side ? pw                                        % 2 : 0) };
-                                x.LineList[2] = x.LineList[2] with { Top = x.LineList[2].Top   - pw / 2 - (x.LineList[0].Top < x.LineList[2].Top ? pw % 2 : 0), Bottom = x.LineList[2].Bottom + pw / 2 + (x.LineList[0].Bottom > x.LineList[2].Bottom ? pw % 2 : 0) };
+                                x.LineList[0] = x.LineList[0] with
+                                {
+                                    Top = x.LineList[0].Top - pw / 2 - (x.LineList[0].Top > x.LineList[2].Top ? pw % 2 : 0),
+                                    Bottom = x.LineList[0].Bottom + pw / 2 + (x.LineList[0].Bottom < x.LineList[2].Bottom ? pw % 2 : 0),
+                                    Left = x.LineList[0].Left - (x.LineList[0].Left > x.LineList[2].Left ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Right = x.LineList[0].Right + (x.LineList[0].Left < x.LineList[2].Left ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
+                                x.LineList[1] = x.LineList[1] with { Left = x.LineList[1].Left - pw / 2 - (!side ? pw % 2 : 0), Right = x.LineList[1].Right + pw / 2 + (side ? pw % 2 : 0) };
+                                x.LineList[2] = x.LineList[2] with
+                                {
+                                    Top = x.LineList[2].Top - pw / 2 - (x.LineList[0].Top < x.LineList[2].Top ? pw % 2 : 0),
+                                    Bottom = x.LineList[2].Bottom + pw / 2 + (x.LineList[0].Bottom > x.LineList[2].Bottom ? pw % 2 : 0),
+                                    Left = x.LineList[2].Left - (x.LineList[0].Left < x.LineList[2].Left ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Right = x.LineList[2].Right + (x.LineList[0].Left > x.LineList[2].Left ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
                             }
 
                             break;

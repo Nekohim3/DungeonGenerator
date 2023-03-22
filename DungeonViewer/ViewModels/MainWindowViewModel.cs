@@ -224,7 +224,7 @@ namespace DungeonViewer.ViewModels
                 }
 
                 Image = sbmp.GetBitmap;
-                sbmp.Save("F:\\test.png");
+                sbmp.Save("I:\\test.png");
             }
         }
     }
