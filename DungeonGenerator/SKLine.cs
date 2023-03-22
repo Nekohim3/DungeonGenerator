@@ -66,6 +66,7 @@ public struct SKLine
 
     #endregion
 }
+
 public struct SKLineI
 {
     #region Properties
