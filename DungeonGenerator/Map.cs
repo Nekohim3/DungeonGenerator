@@ -168,7 +168,7 @@ public class Map
             {
                 if (PassExist(x, c))
                     continue;
-                var lines = new List<SKRectI>();
+                var lines = new List<SKRectI>(); 
                 if (c.Rect.Right > x.Rect.Left + 2 && c.Rect.Left < x.Rect.Right - 2) // straight pass vertical
                 {
                     var passX = GetRand(Math.Max(x.Rect.Left, c.Rect.Left) + 1, Math.Min(x.Rect.Right, c.Rect.Right) - 1);
@@ -207,9 +207,11 @@ public class Map
 
                         lines.Add(new SKRectI(xp.line.i % 2 == 0 ? br : input,
                                               xp.line.i % 2 == 1 ? br : input,
-                                              xp.line.i % 2 == 0 ? c.Rect.GetRectSidePos(cp.line.i) - (cp.line.i < 2 ? 1 : 0) : input,
-                                              xp.line.i % 2 == 1 ? c.Rect.GetRectSidePos(cp.line.i) - (cp.line.i < 2 ? 1 : 0) : input).Standardized);
-                        
+                                              xp.line.i % 2 == 0 ? c.Rect.GetRectSidePos(cp.line.i) - (cp.line.i == 0 ? 1 : 0) : input,
+                                              xp.line.i % 2 == 1 ? c.Rect.GetRectSidePos(cp.line.i) - (cp.line.i == 1 ? 1 : 0) : input).Standardized);
+
+                       
+
                     }
                     else
                     {
@@ -248,105 +250,77 @@ public class Map
                     if (lines[i].Top > area.Bottom)
                         lines[i] = lines[i] with { Top = area.Bottom };
                 }
-                if (!_rooms.Any(_ => lines.Any(__ => __.IntersectsWith(_.Rect))) && !_passes.SelectMany(_ => _.LineList).Any(_ => lines.Any(__ => __.IntersectsWith(_))))
+                var pw = GetRand(MinPassWidth, MaxPassWidth) - 1;
+                if (pw > 0)
+                {
+                    var side = Convert.ToBoolean(GetRand(0, 2));
+                    switch (lines.Count)
+                    {
+                        case 1:
+                            if (lines[0].Left == lines[0].Right)
+                                lines[0] = lines[0] with { Left = lines[0].Left - pw / 2 - (!side ? pw % 2 : 0), Right = lines[0].Right + pw / 2 + (side ? pw % 2 : 0) };
+                            else
+                                lines[0] = lines[0] with { Top = lines[0].Top - pw / 2 - (!side ? pw % 2 : 0), Bottom = lines[0].Bottom + pw / 2 + (side ? pw % 2 : 0) };
+                            break;
+                        case 2:
+                            if (lines[0].Left == lines[0].Right)
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                            break;
+                        case 3:
+                            if (lines[0].Left == lines[0].Right)
+                            {
+                                lines[0] = lines[0] with
+                                {
+                                    Left = lines[0].Left - pw / 2 - (lines[0].Left > lines[2].Left ? pw % 2 : 0),
+                                    Right = lines[0].Right + pw / 2 + (lines[0].Right < lines[2].Right ? pw % 2 : 0),
+                                    Top = lines[0].Top - (lines[0].Top > lines[2].Top ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Bottom = lines[0].Bottom + (lines[0].Top < lines[2].Top ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
+                                lines[1] = lines[1] with { Top = lines[1].Top - pw / 2 - (!side ? pw % 2 : 0), Bottom = lines[1].Bottom + pw / 2 + (side ? pw % 2 : 0) };
+                                lines[2] = lines[2] with
+                                {
+                                    Left = lines[2].Left - pw / 2 - (lines[0].Left < lines[2].Left ? pw % 2 : 0),
+                                    Right = lines[2].Right + pw / 2 + (lines[0].Right > lines[2].Right ? pw % 2 : 0),
+                                    Top = lines[2].Top - (lines[0].Top < lines[2].Top ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Bottom = lines[2].Bottom + (lines[0].Top > lines[2].Top ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
+                            }
+                            else
+                            {
+                                lines[0] = lines[0] with
+                                {
+                                    Top = lines[0].Top - pw / 2 - (lines[0].Top > lines[2].Top ? pw % 2 : 0),
+                                    Bottom = lines[0].Bottom + pw / 2 + (lines[0].Bottom < lines[2].Bottom ? pw % 2 : 0),
+                                    Left = lines[0].Left - (lines[0].Left > lines[2].Left ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Right = lines[0].Right + (lines[0].Left < lines[2].Left ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
+                                lines[1] = lines[1] with { Left = lines[1].Left - pw / 2 - (!side ? pw % 2 : 0), Right = lines[1].Right + pw / 2 + (side ? pw % 2 : 0) };
+                                lines[2] = lines[2] with
+                                {
+                                    Top = lines[2].Top - pw / 2 - (lines[0].Top < lines[2].Top ? pw % 2 : 0),
+                                    Bottom = lines[2].Bottom + pw / 2 + (lines[0].Bottom > lines[2].Bottom ? pw % 2 : 0),
+                                    Left = lines[2].Left - (lines[0].Left < lines[2].Left ? pw / 2 + (side ? 0 : pw % 2) : 0),
+                                    Right = lines[2].Right + (lines[0].Left > lines[2].Left ? pw / 2 + (side ? pw % 2 : 0) : 0)
+                                };
+                            }
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                //if (!_rooms.Any(_ => lines.Any(__ => __.IntersectsWith(_.Rect))) && !_passes.SelectMany(_ => _.LineList).Any(_ => lines.Any(__ => __.IntersectsWith(_))))
                     _passes.Add(new Pass(x, c, lines.ToArray()));
             }
         }
     }
-
-    //private void NormalizeMap()
-    //{
-    //    foreach (var x in _rooms)
-    //        x.Rect = x.Rect.Standardized;
-    //    var area = GetArea();
-    //    foreach (var x in _passes)
-    //    {
-    //        for (var i = 0; i < x.LineList.Count; i++)
-    //        {
-    //            x.LineList[i] = x.LineList[i].Standardized;
-    //            if (x.LineList[i].Left < 0)
-    //                x.LineList[i] = x.LineList[i] with { Left = 0 };
-    //            if (x.LineList[i].Top < 0)
-    //                x.LineList[i] = x.LineList[i] with { Top = 0 };
-    //            if (x.LineList[i].Right > area.Right)
-    //                x.LineList[i] = x.LineList[i] with { Right = area.Right };
-    //            if (x.LineList[i].Bottom > area.Bottom)
-    //                x.LineList[i] = x.LineList[i] with { Bottom = area.Bottom };
-    //        }
-    //    }
-    //}
-
-    //private void SetPassesWidth()
-    //{
-    //    foreach (var x in _passes)
-    //    {
-    //        var pw = GetRand(MinPassWidth, MaxPassWidth) - 1;
-    //        if (pw > 0)
-    //        {
-    //            var side = Convert.ToBoolean(GetRand(0, 2));
-    //            switch (x.LineList.Count)
-    //            {
-    //                case 1:
-    //                    if (x.LineList[0].Left == x.LineList[0].Right)
-    //                        x.LineList[0] = x.LineList[0] with { Left = x.LineList[0].Left - pw / 2 - (!side ? pw % 2 : 0), Right = x.LineList[0].Right + pw / 2 + (side ? pw % 2 : 0) };
-    //                    else
-    //                        x.LineList[0] = x.LineList[0] with { Top = x.LineList[0].Top - pw / 2 - (!side ? pw % 2 : 0), Bottom = x.LineList[0].Bottom + pw / 2 + (side ? pw % 2 : 0) };
-    //                    break;
-    //                case 2:
-    //                    if (x.LineList[0].Left == x.LineList[0].Right)
-    //                    {
-
-    //                    }
-    //                    else
-    //                    {
-                            
-    //                    }
-    //                    break;
-    //                case 3:
-    //                    if (x.LineList[0].Left == x.LineList[0].Right)
-    //                    {
-    //                        x.LineList[0] = x.LineList[0] with
-    //                                        {
-    //                                            Left = x.LineList[0].Left     - pw / 2 - (x.LineList[0].Left  > x.LineList[2].Left ? pw  % 2 : 0),
-    //                                            Right = x.LineList[0].Right   + pw / 2 + (x.LineList[0].Right < x.LineList[2].Right ? pw % 2 : 0),
-    //                                            Top = x.LineList[0].Top       - (x.LineList[0].Top            > x.LineList[2].Top ? pw / 2 + (side ? 0 : pw % 2) : 0),
-    //                                            Bottom = x.LineList[0].Bottom + (x.LineList[0].Top            < x.LineList[2].Top ? pw / 2 + (side ? pw     % 2 : 0) : 0)
-    //                                        };
-    //                        x.LineList[1] = x.LineList[1] with { Top = x.LineList[1].Top - pw / 2 - (!side ? pw % 2 : 0), Bottom = x.LineList[1].Bottom + pw / 2 + (side ? pw % 2 : 0) };
-    //                        x.LineList[2] = x.LineList[2] with
-    //                                        {
-    //                                            Left = x.LineList[2].Left     - pw / 2 - (x.LineList[0].Left  < x.LineList[2].Left ? pw  % 2 : 0),
-    //                                            Right = x.LineList[2].Right   + pw / 2 + (x.LineList[0].Right > x.LineList[2].Right ? pw % 2 : 0),
-    //                                            Top = x.LineList[2].Top       - (x.LineList[0].Top            < x.LineList[2].Top ? pw / 2 + (side ? 0 : pw % 2) : 0),
-    //                                            Bottom = x.LineList[2].Bottom + (x.LineList[0].Top            > x.LineList[2].Top ? pw / 2 + (side ? pw     % 2 : 0) : 0)
-    //                                        };
-    //                    }
-    //                    else
-    //                    {
-    //                        x.LineList[0] = x.LineList[0] with
-    //                                        {
-    //                                            Top = x.LineList[0].Top       - pw / 2 - (x.LineList[0].Top    > x.LineList[2].Top ? pw    % 2 : 0),
-    //                                            Bottom = x.LineList[0].Bottom + pw / 2 + (x.LineList[0].Bottom < x.LineList[2].Bottom ? pw % 2 : 0),
-    //                                            Left = x.LineList[0].Left     - (x.LineList[0].Left            > x.LineList[2].Left ? pw / 2 + (side ? 0 : pw % 2) : 0),
-    //                                            Right = x.LineList[0].Right   + (x.LineList[0].Left            < x.LineList[2].Left ? pw / 2 + (side ? pw     % 2 : 0) : 0)
-    //                                        };
-    //                        x.LineList[1] = x.LineList[1] with { Left = x.LineList[1].Left - pw / 2 - (!side ? pw % 2 : 0), Right = x.LineList[1].Right + pw / 2 + (side ? pw % 2 : 0) };
-    //                        x.LineList[2] = x.LineList[2] with
-    //                                        {
-    //                                            Top = x.LineList[2].Top       - pw / 2 - (x.LineList[0].Top    < x.LineList[2].Top ? pw    % 2 : 0),
-    //                                            Bottom = x.LineList[2].Bottom + pw / 2 + (x.LineList[0].Bottom > x.LineList[2].Bottom ? pw % 2 : 0),
-    //                                            Left = x.LineList[2].Left     - (x.LineList[0].Left            < x.LineList[2].Left ? pw / 2 + (side ? 0 : pw % 2) : 0),
-    //                                            Right = x.LineList[2].Right   + (x.LineList[0].Left            > x.LineList[2].Left ? pw / 2 + (side ? pw     % 2 : 0) : 0)
-    //                                        };
-    //                    }
-
-    //                    break;
-    //                default:
-    //                    break;
-    //            }
-    //        }
-    //    }
-    //}
 
     public bool PassExist(Room r1, Room r2) => _passes.Count(_ => (_.StartRoom == r1 && _.EndRoom == r2) || (_.StartRoom == r2 && _.EndRoom == r1)) != 0;
 
@@ -360,21 +334,28 @@ public class Map
         _mapArray = new byte[area.Width + 1, area.Height + 1];
         foreach (var x in _rooms)
             FillRegionWith(x.Rect, 1);
-        foreach (var x in _passes.SelectMany(_ => _.LineList))
-            FillRegionWith(x, 1);
+
+        foreach (var x in _passes)
+        {
+            for (var i = 0; i < x.LineList.Count; i++)
+            {
+                if (i == 0)
+                    FillRegionWith(x.LineList[i], 2);
+                if (i == 1)
+                    FillRegionWith(x.LineList[i], 3);
+                if (i == 2)
+                    FillRegionWith(x.LineList[i], 4);
+            }
+        }
     }
 
-    private void FillRegionWith(SKRectI r, byte fill) => FillRegionWith(new SKPointI(r.Left,    r.Top),     new SKPointI(r.Right, r.Bottom), fill);
-    private void FillRegionWith(SKLineI l, byte fill) => FillRegionWith(new SKPointI(l.Start.X, l.Start.Y), new SKPointI(l.End.X, l.End.Y),  fill);
+    //private void FillRegionWith(SKRectI r, byte fill) => FillRegionWith(new SKPointI(r.Left,    r.Top),     new SKPointI(r.Right, r.Bottom), fill);
+    //private void FillRegionWith(SKLineI l, byte fill) => FillRegionWith(new SKPointI(l.Start.X, l.Start.Y), new SKPointI(l.End.X, l.End.Y),  fill);
 
-    private void FillRegionWith(SKPointI start, SKPointI end, byte fill)
+    private void FillRegionWith(SKRectI r, byte fill)
     {
-        var ys = start.Y < end.Y ? start.Y : end.Y;
-        var ye = start.Y < end.Y ? end.Y : start.Y;
-        var xs = start.X < end.X ? start.X : end.X;
-        var xe = start.X < end.X ? end.X : start.X;
-        for (var i = ys; i <= ye; i++)
-        for (var j = xs; j <= xe; j++)
+        for (var i = r.Top; i < r.Bottom; i++)
+        for (var j = r.Left; j < r.Right; j++)
             _mapArray[j, i] = fill;
     }
 

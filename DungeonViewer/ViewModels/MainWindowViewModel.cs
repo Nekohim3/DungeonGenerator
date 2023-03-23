@@ -188,7 +188,7 @@ namespace DungeonViewer.ViewModels
             FixSeed                  = true;
             GenerateCmd              = ReactiveCommand.Create(OnGenerate);
             _map                     = new Map(_roomMinWidth, _roomMinHeight, _roomMaxWidth, _roomMaxHeight, _roomMinCount, _roomMaxCount, _minDistanceBetweenRooms, _maxDistanceBetweenRooms, _minPassWidth, _maxPassWidth);
-            ColorDict                = new Dictionary<int, SKColor> { { 0, new SKColor(0x22, 0x22, 0x22) }, { 1, new SKColor(0x77, 0x77, 0x77) } };
+            ColorDict                = new Dictionary<int, SKColor> {{0, new SKColor(0x22, 0x22, 0x22)}, {1, new SKColor(0x77, 0x77, 0x77)}, { 2, new SKColor(0xaa, 0x66, 0x66) }, { 3, new SKColor(0x66, 0xaa, 0x66) }, { 4, new SKColor(0x66, 0x66, 0xaa) } };
             GenerateMap();
         }
 
@@ -224,7 +224,7 @@ namespace DungeonViewer.ViewModels
                 }
 
                 Image = sbmp.GetBitmap;
-                sbmp.Save("F:\\test.png");
+                sbmp.Save("I:\\test.png");
             }
         }
     }
