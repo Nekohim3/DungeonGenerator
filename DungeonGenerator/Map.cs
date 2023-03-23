@@ -333,7 +333,9 @@ public class Map
         var area = GetArea();
         _mapArray = new byte[area.Width + 1, area.Height + 1];
         foreach (var x in _rooms)
-            FillRegionWith(x.Rect, 1);
+            for (var i = x.Rect.Top; i < x.Rect.Bottom; i++)
+            for (var j = x.Rect.Left; j < x.Rect.Right; j++)
+                _mapArray[j, i] = 1;
 
         foreach (var x in _passes)
         {
@@ -354,9 +356,9 @@ public class Map
 
     private void FillRegionWith(SKRectI r, byte fill)
     {
-        for (var i = r.Top; i < r.Bottom; i++)
-        for (var j = r.Left; j < r.Right; j++)
-            _mapArray[j, i] = fill;
+            for (var i = r.Top; i <= r.Bottom; i++)
+            for (var j = r.Left; j <= r.Right; j++)
+                _mapArray[j, i] = fill;
     }
 
     #endregion
