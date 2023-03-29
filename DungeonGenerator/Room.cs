@@ -13,7 +13,9 @@ namespace DungeonGenerator
         public string  Name { get; set; }
         public SKRectI Rect;
 
-        public SKPoint MidPoint => Rect.GetMidPoint();
+        public List<Element> Elements { get; set; } = new(); 
+
+        public SKPointI MidPoint => Rect.GetMidPoint();
 
         public Room(SKRectI r, string name)
         {
@@ -25,6 +27,22 @@ namespace DungeonGenerator
         {
             Rect = new SKRectI(l, t, r, b);
             Name = name;
+        }
+
+        public void AddElement(Element e, Random r)
+        {
+            var res = RepeatableCode.RepeatResult(() =>
+                                        {
+                                            var p = new SKPointI(r.GetRand(0, Rect.Width), r.GetRand(0, Rect.Height));
+                                            if (Elements.Any(_ => _.Position == p))
+                                                return false;
+                                            e.Position = p;
+                                            Elements.Add(e);
+                                            return true;
+                                        }, 100000);
+            if (!res)
+                throw new Exception();
+
         }
     }
 }

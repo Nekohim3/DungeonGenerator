@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SkiaSharp;
 
 namespace DungeonGenerator
 {
@@ -10,11 +11,13 @@ namespace DungeonGenerator
     {
         StartPoint = 0x00,
 
-        Chest1 = 0x10,
-        Chest2 = 0x11,
-        Chest3 = 0x12,
-        Mimic = 0x13,
-
+        Chest1 = 0x10,//Common
+        Chest2 = 0x11,//Uncommon
+        Chest3 = 0x12,//Rare
+        Mimic1 = 0x13,
+        Mimic2 = 0x14,
+        Mimic3 = 0x15,
+        
         Mirror = 0x20,
 
         EroTrap = 0x30,
@@ -41,5 +44,41 @@ namespace DungeonGenerator
     }
     public class Element
     {
+        public ElementType ElementType;
+        public bool        Passable { get; set; }
+
+        public SKPointI Position { get; set; }
+
+        public Element(ElementType et)
+        {
+            ElementType = et;
+        }
+
+        public void SetPos(SKPointI pos)
+        {
+            Position = pos;
+        }
+    }
+
+    public class ElementRate
+    {
+        public ElementType Type           { get; set; }
+        public int         MinRatePerMap  { get; set; }
+        public int         MaxRatePerMap  { get; set; }
+        public int         MinRatePerRoom { get; set; }
+        public int         MaxRatePerRoom { get; set; }
+        public int         MinRatePerPass { get; set; }
+        public int         MaxRatePerPass { get; set; }
+
+        public ElementRate(ElementType type, int minRatePerMap, int maxRatePerMap, int minRatePerRoom, int maxRatePerRoom, int minRatePerPass, int maxRatePerPass)
+        {
+            Type           = type;
+            MinRatePerMap  = minRatePerMap;
+            MaxRatePerMap  = maxRatePerMap;
+            MinRatePerRoom = minRatePerRoom;
+            MaxRatePerRoom = maxRatePerRoom;
+            MinRatePerPass = minRatePerPass;
+            MaxRatePerPass = maxRatePerPass;
+        }
     }
 }

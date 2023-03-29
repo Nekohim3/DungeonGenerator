@@ -62,9 +62,13 @@
 								<Slider Grid.Row="9" Grid.Column="1" Minimum="1" Maximum="30" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding MaxPassWidth}"/>
 								<TextBlock Grid.Row="9" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding MaxPassWidth}"/>
 
-								<TextBlock Grid.Row="10" Grid.Column="0" Text="Seed" VerticalAlignment="Center" Margin="5"/>
-								<TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Seed}"/>
-								<CheckBox Grid.Row="10" Grid.Column="2" IsChecked="{Binding FixSeed}"/>
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Pass percent" VerticalAlignment="Center" Margin="5"/>
+                <Slider Grid.Row="10" Grid.Column="1" Minimum="0" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" MinWidth="500" Margin="0,0,5,0" Value="{Binding LongPathDifferencePercent}"/>
+                <TextBlock Grid.Row="10" Grid.Column="2" VerticalAlignment="Center" Width="30" HorizontalAlignment="Center" Text="{Binding LongPathDifferencePercent}"/>
+
+								<TextBlock Grid.Row="18" Grid.Column="0" Text="Seed" VerticalAlignment="Center" Margin="5"/>
+								<TextBox Grid.Row="18" Grid.Column="1" Text="{Binding Seed}"/>
+								<CheckBox Grid.Row="18" Grid.Column="2" IsChecked="{Binding FixSeed}"/>
 
                 <Grid Grid.Row="20" Grid.ColumnSpan="3" Grid.Column="0">
 										<Button Content="Generate" Command="{Binding GenerateCmd}"/>

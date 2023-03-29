@@ -44,4 +44,15 @@ public static class RepeatableCode
 
         return null;
     }
+    public static bool RepeatResult(Func<bool> func, int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            var res = func.Invoke();
+            if (res)
+                return res;
+        }
+
+        return false;
+    }
 }

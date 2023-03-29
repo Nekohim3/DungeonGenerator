@@ -11,16 +11,16 @@ namespace DungeonGenerator.Extensions
     {
         #region Rectangle
 
-        public static SKRectI ExpandLeft(this SKRectI r, int left) => r with { Left = r.Left - left };
-        public static SKRectI ExpandTop(this SKRectI r, int top) => r with { Top = r.Top - top };
-        public static SKRectI ExpandRight(this SKRectI r, int right) => r with { Right = r.Right + right };
-        public static SKRectI ExpandBottom(this SKRectI r, int bottom) => r with { Bottom = r.Bottom + bottom };
-        public static SKRectI ExpandWidth(this SKRectI r, int width) => r.ExpandLeft(width).ExpandRight(width);
-        public static SKRectI ExpandHeight(this SKRectI r, int height) => r.ExpandTop(height).ExpandBottom(height);
-        public static SKRectI ExpandAll(this SKRectI r, int n) => r.ExpandWidth(n).ExpandHeight(n);
-        public static SKRectI Expand(this SKRectI r, int left, int top, int right, int bottom) => r.ExpandLeft(left).ExpandTop(top).ExpandRight(right).ExpandBottom(bottom);
-        public static SKPoint GetMidPoint(this SKRectI r) => new(r.MidX, r.MidY);
-        public static List<SKLineI> GetRectLines(this SKRectI r) => new() { new SKLineI(r.Left, r.Top, r.Left, r.Bottom), new SKLineI(r.Left, r.Top, r.Right, r.Top), new SKLineI(r.Right, r.Top, r.Right, r.Bottom), new SKLineI(r.Left, r.Bottom, r.Right, r.Bottom) };
+        public static SKRectI        ExpandLeft(this    SKRectI r, int left)                                 => r with { Left = r.Left     - left };
+        public static SKRectI        ExpandTop(this     SKRectI r, int top)                                  => r with { Top = r.Top       - top };
+        public static SKRectI        ExpandRight(this   SKRectI r, int right)                                => r with { Right = r.Right   + right };
+        public static SKRectI        ExpandBottom(this  SKRectI r, int bottom)                               => r with { Bottom = r.Bottom + bottom };
+        public static SKRectI        ExpandWidth(this   SKRectI r, int width)                                => r.ExpandLeft(width).ExpandRight(width);
+        public static SKRectI        ExpandHeight(this  SKRectI r, int height)                               => r.ExpandTop(height).ExpandBottom(height);
+        public static SKRectI        ExpandAll(this     SKRectI r, int n)                                    => r.ExpandWidth(n).ExpandHeight(n);
+        public static SKRectI        Expand(this        SKRectI r, int left, int top, int right, int bottom) => r.ExpandLeft(left).ExpandTop(top).ExpandRight(right).ExpandBottom(bottom);
+        public static SKPointI        GetMidPoint(this   SKRectI r) => new(r.MidX, r.MidY);
+        public static List<SKLineI>  GetRectLines(this  SKRectI r) => new() { new SKLineI(r.Left, r.Top, r.Left, r.Bottom), new SKLineI(r.Left, r.Top, r.Right, r.Top), new SKLineI(r.Right, r.Top, r.Right, r.Bottom), new SKLineI(r.Left, r.Bottom, r.Right, r.Bottom) };
         public static List<SKPointI> GetRectPoints(this SKRectI r) => new() { new SKPointI(r.Left, r.Top), new SKPointI(r.Right, r.Top), new SKPointI(r.Right, r.Bottom), new SKPointI(r.Left, r.Bottom) };
 
         public static float GetDistanceToRect(this SKRectI r, SKRectI r1)
