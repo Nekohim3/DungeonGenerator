@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DungeonGenerator", "Dungeon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonViewer", "DungeonViewer\DungeonViewer.csproj", "{74F1C26A-1F01-49B0-A40B-4C099CC54F6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrapDungeonGenerator", "TrapDungeonGenerator\TrapDungeonGenerator.csproj", "{332B29AF-56E7-4B7A-8DB2-EF015CC03996}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{74F1C26A-1F01-49B0-A40B-4C099CC54F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F1C26A-1F01-49B0-A40B-4C099CC54F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F1C26A-1F01-49B0-A40B-4C099CC54F6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{332B29AF-56E7-4B7A-8DB2-EF015CC03996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{332B29AF-56E7-4B7A-8DB2-EF015CC03996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{332B29AF-56E7-4B7A-8DB2-EF015CC03996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{332B29AF-56E7-4B7A-8DB2-EF015CC03996}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
